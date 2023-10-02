@@ -6,7 +6,7 @@ function love.conf(t)
   -- t.gammacorrect = true
   -- t.audio.mic = true
 
-  -- t.window.icon = "icon/game_icon.jpg"
+  t.window.icon = "icon/game_icon.jpg"
   t.window.title = "Cool Ball Game"
   t.window.width = 1200
   t.window.height = 700

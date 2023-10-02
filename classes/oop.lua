@@ -1,6 +1,6 @@
 local function Pet(name)
   local age = 10 --> could not be a value that can be used
--- age can the used like a private variable (just like in Java)
+-- age can be used like a private variable (just like in Java)
   return {
     name = name or "Charlie", -- if they don't insert a name, the default name will be "Charlie"
     daysAlive = age * 365, --> something like a public variable (just like in Java)
