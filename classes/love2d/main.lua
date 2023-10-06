@@ -1,47 +1,70 @@
 _G.love = require("love") -- importing a module called love
 
 function love.load()
-  love.graphics.setBackgroundColor(0.5, 0.5, 1)
-
-  _G.pacman = {}
-  pacman.x = 200
-  pacman.y = 250
-
-  -- coding doing the same thing
-  --[[
-  _G.pacman = {
-    x = 200,
-    y = 250
+  mel = {
+    x = 0,
+    y = 0,
+    sprite = love.graphics.newImage("sprites/spritesheet.png"),
+    animation = {
+      direction = "right",
+      idle = true,
+      frame = 1,
+      max_frames = 8,
+      speed = 30,
+      timer = 0.1
+    }
   }
-  --]]
 
-  pacman.eat = false
+  SPRITE_WIDTH = 5352
+  SPRITE_HEIGHT = 569
 
-  _G.food_x = 600
-  _G.food_y = 200
+  QUAD_WIDTH = 669
+  QUAD_HEIGHT = SPRITE_HEIGHT
+
+
+  quads = {}
+  for i = 1, mel.animation.max_frames do
+    quads[i]= love.graphics.newQuad(QUAD_WIDTH * (i - 1), 0, QUAD_WIDTH, QUAD_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT)
+  end
 end
 
 function love.update(dt)
-  pacman.x = pacman.x + 1
+  if love.keyboard.isDown("d") then
+    mel.animation.idle = false
+    mel.animation.direction = "right"
+  elseif love.keyboard.isDown("a") then
+    mel.animation.idle = false
+    mel.animation.direction = "left"
+  else mel.animation.idle = true mel.animation.frame = 1
+  end
 
-  if pacman.x >= food_x + 20 then 
-    pacman.eat = true
+  if not mel.animation.idle then
+    mel.animation.timer = mel.animation.timer + dt
+
+    if mel.animation.timer > 0.2 then
+      mel.animation.timer = 0.1
+
+      mel.animation.frame = mel.animation.frame + 1
+
+    if mel.animation.direction == "right" then
+      mel.x = mel.x + mel.animation.speed;
+    elseif mel.animation.direction == "left" then
+      mel.x = mel.x - mel.animation.speed
+    end
+
+      if mel.animation.frame > mel.animation.max_frames then
+        mel.animation.frame = 1
+      end
+    end
   end
 end
 
 function love.draw()
-  if not pacman.eat then
-  -- RGB
-  love.graphics.setColor(1, 0, 0) -- this is going to be red
-  -- 75, 148, 10  (a sort of a green)
-  love.graphics.setColor(75 / 255, 148 / 255, 10 / 255) -- this is how to convert to usual RGB value
+  love.graphics.scale(0.3)
 
-  -- love.graphics.rectangle("line", 50, 50, 50, 50) -- x, y, width, height
-  love.graphics.rectangle("fill", food_x, food_y, 70, 70) -- x, y, width, height
+  if mel.animation.direction == "right" then
+    love.graphics.draw(mel.sprite, quads[mel.animation.frame], mel.x, mel.y)
+  else
+    love.graphics.draw(mel.sprite, quads[mel.animation.frame], mel.x, mel.y, 0, -1, 1, QUAD_WIDTH, 0)
   end
-
-  love.graphics.setColor(1, 0.7, 0.1) -- this is going to be red
-  -- love.graphics.circle("line", 200, 500, 50) -- x, y, radius
-
-  love.graphics.arc("fill", pacman.x, pacman.y, 60, 1, 5) -- x, y, radius, start of one of the parts, start of the another part
 end
